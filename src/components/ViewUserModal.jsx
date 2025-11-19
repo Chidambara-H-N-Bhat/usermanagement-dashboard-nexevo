@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Input, Tag, Button, message } from "antd";
+import { Modal, Input, Tag, Button, Select, message } from "antd";
 import axios from "axios";
+
+const { Option } = Select;
+
+const countriesList = [
+  { name: "India", code: "IN", flag: "🇮🇳" },
+  { name: "United States", code: "US", flag: "🇺🇸" },
+  { name: "Canada", code: "CA", flag: "🇨🇦" },
+  { name: "Australia", code: "AU", flag: "🇦🇺" },
+];
 
 const ViewUserModal = ({ visible, setVisible, user, onUserUpdated, onAddUser }) => {
   const [editable, setEditable] = useState(false);
@@ -25,18 +34,18 @@ const ViewUserModal = ({ visible, setVisible, user, onUserUpdated, onAddUser }) 
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-const handleSave = async () => {
-  try {
-    await axios.put(`http://localhost:5000/users/${user.id}`, formData);
-    message.success("User updated successfully!");
-    onUserUpdated?.(); // call parent to refresh table
-    setEditable(false);
-    setVisible(false);
-  } catch (error) {
-    console.error("Failed to update user:", error);
-    message.error("Failed to update user.");
-  }
-};
+  const handleSave = async () => {
+    try {
+      await axios.put(`http://localhost:5000/users/${user.id}`, formData);
+      message.success("User updated successfully!");
+      onUserUpdated?.(); // refresh parent table
+      setEditable(false);
+      setVisible(false);
+    } catch (error) {
+      console.error("Failed to update user:", error);
+      message.error("Failed to update user.");
+    }
+  };
 
   return (
     <Modal
@@ -73,6 +82,7 @@ const handleSave = async () => {
       ]}
     >
       <div className="flex flex-col gap-4">
+        {/* Username */}
         <div>
           <label className="font-semibold mr-2">Username:</label>
           {editable ? (
@@ -85,6 +95,7 @@ const handleSave = async () => {
           )}
         </div>
 
+        {/* Set Code */}
         <div>
           <label className="font-semibold mr-2">Set Code:</label>
           {editable ? (
@@ -97,18 +108,23 @@ const handleSave = async () => {
           )}
         </div>
 
+        {/* Countries */}
         <div>
           <label className="font-semibold mr-2">Countries:</label>
           {editable ? (
-            <Input
-              value={formData.countries.join(", ")}
-              onChange={(e) =>
-                handleChange(
-                  "countries",
-                  e.target.value.split(",").map((c) => c.trim())
-                )
-              }
-            />
+            <Select
+              mode="multiple"
+              style={{ width: "100%" }}
+              placeholder="Select countries"
+              value={formData.countries}
+              onChange={(values) => handleChange("countries", values)}
+            >
+              {countriesList.map((c) => (
+                <Option key={c.code} value={c.name}>
+                  {c.flag} {c.name}
+                </Option>
+              ))}
+            </Select>
           ) : (
             formData.countries.map((c) => (
               <Tag key={c} color="blue">
