@@ -7,7 +7,7 @@ import ViewUserModal from "./components/ViewUserModal";
 
 const App = () => {
   const [users, setUsers] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [newUserModalVisible, setNewUserModalVisible] = useState(false);
   const [viewUser, setViewUser] = useState(null);
 
   const fetchUsers = async () => {
@@ -25,7 +25,13 @@ const App = () => {
 
   const handleUserSaved = (newUser) => {
     setUsers((prev) => [...prev, newUser]);
-    setModalVisible(false);
+    setNewUserModalVisible(false);
+  };
+
+  // Triggered from ViewUserModal to open NewUserModal
+  const handleOpenNewUser = () => {
+    setViewUser(null); // close view modal
+    setNewUserModalVisible(true); // open new user modal
   };
 
   return (
@@ -33,7 +39,7 @@ const App = () => {
       {users.length > 0 ? (
         <UsersTable
           users={users}
-          onAddUser={() => setModalVisible(true)}
+          onAddUser={() => setNewUserModalVisible(true)}
           onViewUser={(user) => setViewUser(user)}
         />
       ) : (
@@ -46,7 +52,7 @@ const App = () => {
             type="primary"
             size="large"
             className="!bg-black !border-black !text-white hover:!bg-gray-900"
-            onClick={() => setModalVisible(true)}
+            onClick={() => setNewUserModalVisible(true)}
           >
             + Add New User
           </Button>
@@ -54,10 +60,10 @@ const App = () => {
       )}
 
       {/* New User Modal */}
-      {modalVisible && (
+      {newUserModalVisible && (
         <NewUserModal
-          visible={modalVisible}
-          setVisible={setModalVisible}
+          visible={newUserModalVisible}
+          setVisible={setNewUserModalVisible}
           onUserSaved={handleUserSaved}
         />
       )}
@@ -68,6 +74,7 @@ const App = () => {
           visible={!!viewUser}
           setVisible={() => setViewUser(null)}
           user={viewUser}
+          onAddUser={handleOpenNewUser} // open new user modal from view modal
         />
       )}
     </div>

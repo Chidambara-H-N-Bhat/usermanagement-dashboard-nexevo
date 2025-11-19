@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Input, Tag, Button } from "antd";
 
-const ViewUserModal = ({ visible, setVisible, user }) => {
+const ViewUserModal = ({ visible, setVisible, user, onAddUser }) => {
   const [editable, setEditable] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -25,7 +25,6 @@ const ViewUserModal = ({ visible, setVisible, user }) => {
   };
 
   const handleSave = () => {
-    // Here you can call backend to update user if needed
     console.log("Saved user:", formData);
     setEditable(false);
     setVisible(false);
@@ -37,18 +36,32 @@ const ViewUserModal = ({ visible, setVisible, user }) => {
       open={visible}
       onCancel={() => setVisible(false)}
       footer={[
-        <Button key="cancel" onClick={() => setVisible(false)}>
-          Cancel
-        </Button>,
-        editable ? (
-          <Button key="save" type="primary" onClick={handleSave}>
-            Save
+        <div className="w-full flex justify-between items-center">
+          {/* Add New User button */}
+          <Button
+            key="addNew"
+            type="primary"
+            className="!bg-black !border-black !text-white hover:!bg-gray-900"
+            onClick={onAddUser} // call parent handler
+          >
+            + Add New User
           </Button>
-        ) : (
-          <Button key="edit" type="primary" onClick={() => setEditable(true)}>
-            Edit
-          </Button>
-        ),
+
+          <div>
+            <Button key="cancel" onClick={() => setVisible(false)}>
+              Cancel
+            </Button>
+            {editable ? (
+              <Button key="save" type="primary" onClick={handleSave}>
+                Save
+              </Button>
+            ) : (
+              <Button key="edit" type="primary" onClick={() => setEditable(true)}>
+                Edit
+              </Button>
+            )}
+          </div>
+        </div>,
       ]}
     >
       <div className="flex flex-col gap-4">
