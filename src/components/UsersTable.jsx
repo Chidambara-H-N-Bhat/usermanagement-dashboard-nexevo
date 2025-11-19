@@ -26,10 +26,17 @@ const UsersTable = ({ users, onAddUser, onViewUser }) => {
   ];
 
   return (
-    <div className="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6">
+    <div className="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6 mx-auto mt-8">
+      {/* Header with title and Add User button */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold text-gray-700">Users List</h2>
-        
+        <Button
+          type="primary"
+          className="!bg-black !border-black !text-white hover:!bg-gray-900"
+          onClick={onAddUser}
+        >
+          + Add New User
+        </Button>
       </div>
 
       <Table
@@ -43,8 +50,3 @@ const UsersTable = ({ users, onAddUser, onViewUser }) => {
 };
 
 export default UsersTable;
-
-
-
-
-

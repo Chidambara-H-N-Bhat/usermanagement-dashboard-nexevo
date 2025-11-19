@@ -8,6 +8,15 @@
         "India",
         "United States"
       ]
+    },
+    {
+      "id": "c320",
+      "username": "erg",
+      "setCode": "er",
+      "countries": [
+        "United States",
+        "Canada"
+      ]
     }
   ]
 }
