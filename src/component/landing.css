@@ -1,0 +1,14 @@
+.l{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   
+    align-items: center;      
+    height: 100vh;             
+}
+
+.l2{
+    color: white;
+    border-radius: 80px;
+    border-color: rgb(11, 14, 11);
+    background-color: black;
+}
