@@ -10,14 +10,16 @@ const App = () => {
   const [newUserModalVisible, setNewUserModalVisible] = useState(false);
   const [viewUser, setViewUser] = useState(null);
 
-  // Fetch users from backend
-  const fetchUsers = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/users");
-      setUsers(res.data);
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-    }
+  
+  const fetchUsers = () => {
+    axios
+      .get("http://localhost:5000/users")
+      .then((res) => {
+        setUsers(res.data);
+      })
+      .catch((err) => {
+        console.log("Error fetching users", err);
+      });
   };
 
   useEffect(() => {
@@ -25,36 +27,36 @@ const App = () => {
   }, []);
 
   const handleUserSaved = (newUser) => {
-    // After saving new user, fetch latest data
+    
     fetchUsers();
     setNewUserModalVisible(false);
   };
 
-  // Triggered from ViewUserModal to open NewUserModal
   const handleOpenNewUser = () => {
-    setViewUser(null); // close view modal
-    setNewUserModalVisible(true); // open new user modal
+    setViewUser(null); 
+    setNewUserModalVisible(true); 
   };
 
-  // Triggered after editing a user in ViewUserModal
   const handleUserUpdated = () => {
-    fetchUsers(); // fetch fresh data
-    setViewUser(null); // close the modal
+    fetchUsers();
+    setViewUser(null);
   };
 
   return (
     <div>
       {users.length > 0 ? (
-        <UsersTable
-          users={users}
-          onAddUser={() => setNewUserModalVisible(true)}
-          onViewUser={(user) => setViewUser(user)}
-        />
+        <div>
+          <UsersTable
+            users={users}
+            onAddUser={() => setNewUserModalVisible(true)}
+            onViewUser={(user) => setViewUser(user)}
+          />
+        </div>
       ) : (
         <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
           <h1 className="text-3xl font-bold mb-3">Create a new user</h1>
           <h4 className="text-center mb-6">
-            Add user details, set permissions, and assign roles to manage access within your system.
+            Add user details, set permissions, and assign roles.
           </h4>
           <Button
             type="primary"
@@ -67,25 +69,23 @@ const App = () => {
         </div>
       )}
 
-      {/* New User Modal */}
-      {newUserModalVisible && (
+      {newUserModalVisible ? (
         <NewUserModal
           visible={newUserModalVisible}
           setVisible={setNewUserModalVisible}
           onUserSaved={handleUserSaved}
         />
-      )}
+      ) : null}
 
-      {/* View User Modal */}
-      {viewUser && (
+      {viewUser ? (
         <ViewUserModal
-          visible={!!viewUser}
+          visible={true}
           setVisible={() => setViewUser(null)}
           user={viewUser}
-          onAddUser={handleOpenNewUser} // open new user modal from view modal
-          onUserUpdated={handleUserUpdated} // refresh table after edit
+          onAddUser={handleOpenNewUser}
+          onUserUpdated={handleUserUpdated}
         />
-      )}
+      ) : null}
     </div>
   );
 };
