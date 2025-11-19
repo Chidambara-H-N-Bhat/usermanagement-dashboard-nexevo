@@ -10,6 +10,7 @@ const App = () => {
   const [newUserModalVisible, setNewUserModalVisible] = useState(false);
   const [viewUser, setViewUser] = useState(null);
 
+  // Fetch users from backend
   const fetchUsers = async () => {
     try {
       const res = await axios.get("http://localhost:5000/users");
@@ -24,7 +25,8 @@ const App = () => {
   }, []);
 
   const handleUserSaved = (newUser) => {
-    setUsers((prev) => [...prev, newUser]);
+    // After saving new user, fetch latest data
+    fetchUsers();
     setNewUserModalVisible(false);
   };
 
@@ -32,6 +34,12 @@ const App = () => {
   const handleOpenNewUser = () => {
     setViewUser(null); // close view modal
     setNewUserModalVisible(true); // open new user modal
+  };
+
+  // Triggered after editing a user in ViewUserModal
+  const handleUserUpdated = () => {
+    fetchUsers(); // fetch fresh data
+    setViewUser(null); // close the modal
   };
 
   return (
@@ -75,6 +83,7 @@ const App = () => {
           setVisible={() => setViewUser(null)}
           user={viewUser}
           onAddUser={handleOpenNewUser} // open new user modal from view modal
+          onUserUpdated={handleUserUpdated} // refresh table after edit
         />
       )}
     </div>

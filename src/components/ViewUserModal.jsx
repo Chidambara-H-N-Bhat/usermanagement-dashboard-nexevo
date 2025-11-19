@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Input, Tag, Button } from "antd";
+import { Modal, Input, Tag, Button, message } from "antd";
+import axios from "axios";
 
-const ViewUserModal = ({ visible, setVisible, user, onAddUser }) => {
+const ViewUserModal = ({ visible, setVisible, user, onUserUpdated, onAddUser }) => {
   const [editable, setEditable] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -24,11 +25,18 @@ const ViewUserModal = ({ visible, setVisible, user, onAddUser }) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved user:", formData);
+const handleSave = async () => {
+  try {
+    await axios.put(`http://localhost:5000/users/${user.id}`, formData);
+    message.success("User updated successfully!");
+    onUserUpdated?.(); // call parent to refresh table
     setEditable(false);
     setVisible(false);
-  };
+  } catch (error) {
+    console.error("Failed to update user:", error);
+    message.error("Failed to update user.");
+  }
+};
 
   return (
     <Modal
